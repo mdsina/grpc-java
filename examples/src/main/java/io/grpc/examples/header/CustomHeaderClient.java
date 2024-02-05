@@ -77,7 +77,7 @@ public class CustomHeaderClient {
    */
   public static void main(String[] args) throws Exception {
     // Access a service running on the local machine on port 50051
-    CustomHeaderClient client = new CustomHeaderClient("localhost", 50051);
+    CustomHeaderClient client = new CustomHeaderClient("localhost", 18081);
     try {
       String user = "world";
       // Use the arg as the name to greet if provided

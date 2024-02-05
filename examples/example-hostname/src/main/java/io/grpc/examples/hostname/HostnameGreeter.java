@@ -31,18 +31,20 @@ public final class HostnameGreeter extends GreeterGrpc.GreeterImplBase {
   private static final Logger logger = Logger.getLogger(HostnameGreeter.class.getName());
 
   private final String serverName;
+  private final String id;
 
-  public HostnameGreeter(String serverName) {
+  public HostnameGreeter(String serverName, String id) {
     if (serverName == null) {
       serverName = determineHostname();
     }
     this.serverName = serverName;
+    this.id = id;
   }
 
   @Override
   public void sayHello(HelloRequest req, StreamObserver<HelloReply> responseObserver) {
     HelloReply reply = HelloReply.newBuilder()
-        .setMessage("Hello " + req.getName() + ", from " + serverName)
+        .setMessage("Hello " + req.getName() + ", from " + serverName + " [id=" + id + "]")
         .build();
     responseObserver.onNext(reply);
     responseObserver.onCompleted();

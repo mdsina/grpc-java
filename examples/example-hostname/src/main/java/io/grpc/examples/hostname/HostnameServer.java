@@ -35,24 +35,30 @@ public final class HostnameServer {
   public static void main(String[] args) throws IOException, InterruptedException {
     int port = 50051;
     String hostname = null;
+    String id = null;
     if (args.length >= 1) {
       try {
         port = Integer.parseInt(args[0]);
       } catch (NumberFormatException ex) {
-        System.err.println("Usage: [port [hostname]]");
+        System.err.println("Usage: [port [id [hostname]]]");
         System.err.println("");
         System.err.println("  port      The listen port. Defaults to " + port);
         System.err.println("  hostname  The name clients will see in greet responses. ");
         System.err.println("            Defaults to the machine's hostname");
-        System.exit(1);
+          System.err.println("  id        Instance ID. ");
+          System.exit(1);
       }
     }
     if (args.length >= 2) {
-      hostname = args[1];
+        id = args[1];
     }
+      if (args.length >= 3) {
+          hostname = args[2];
+
+      }
     HealthStatusManager health = new HealthStatusManager();
     final Server server = Grpc.newServerBuilderForPort(port, InsecureServerCredentials.create())
-        .addService(new HostnameGreeter(hostname))
+        .addService(new HostnameGreeter(hostname, id))
         .addService(ProtoReflectionService.newInstance())
         .addService(health.getHealthService())
         .build()
@@ -82,6 +88,7 @@ public final class HostnameServer {
     // TRANSIENT_FAILURE' we'd want to set NOT_SERVING. But HostnameGreeter has no dependencies, so
     // hard-coding SERVING is appropriate.
     health.setStatus("", ServingStatus.SERVING);
+    health.setStatus("Test", ServingStatus.NOT_SERVING);
     server.awaitTermination();
   }
 }
